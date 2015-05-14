@@ -42,6 +42,7 @@ parameters.remove("IncrLat.txt")
 parameters.remove("CumDivNLCD2011.txt")
 parameters.remove("CumDivPrecipMA.txt")
 parameters.remove("CumDivTempMA.txt")
+parameters.remove("CumTotNLCD2011.txt")
 
 #Status counter
 x = 1
@@ -56,7 +57,7 @@ for param in parameters:
     #loop thru each workspace and create an merge list
     fileNames = []
     for df in dataFldrs:
-        fileNames.append(os.path.join(df,parameter))
+        fileNames.append(os.path.join(df,param))
         
     #Merge the files
     print "...merging files" 
