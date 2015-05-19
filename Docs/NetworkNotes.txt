@@ -1,0 +1,63 @@
+Name: NHDFlowlines_ND
+Type: Geodatabase-Based Network Dataset
+Version: 10.1
+Configuration Keyword: NETWORK_DEFAULTS
+
+Sources: 
+  Edge Sources: 
+    NHD.DBO.NHDFlowlines
+
+Connectivity: 
+  Group 1: 
+    Edge Connectivity: 
+      NHD.DBO.NHDFlowlines (End Point)
+
+Elevation Model: Z Coordinate Values
+
+Attributes: 
+  Length: 
+    Usage Type: Cost
+    Data Type: Double
+    Units Type: Meters
+    Use by Default: True
+    Source Attribute Evaluators: 
+      NHD.DBO.NHDFlowlines (From-To): Field
+          Language: VBScript
+          Expression: [Shape]
+      NHD.DBO.NHDFlowlines (To-From): Field
+          Language: VBScript
+          Expression: [Shape]
+    Default Attribute Evaluators: 
+      Default Edges: Constant = 0
+      Default Junctions: Constant = 0
+  FlowDirection: 
+    Usage Type: Restriction
+    Data Type: Boolean
+    Units Type: Unknown
+    Use by Default: True
+    Parameters: 
+      Restriction Usage (Double) = Prohibited
+    Source Attribute Evaluators: 
+      NHD.DBO.NHDFlowlines (From-To): Constant = Ignore Restriction
+      NHD.DBO.NHDFlowlines (To-From): Constant = Use Restriction
+    Default Attribute Evaluators: 
+      Default Edges: Constant = Ignore Restriction
+      Default Junctions: Constant = Ignore Restriction
+  Upstream: 
+    Usage Type: Restriction
+    Data Type: Boolean
+    Units Type: Unknown
+    Use by Default: False
+    Parameters: 
+      Restriction Usage (Double) = Prohibited
+    Source Attribute Evaluators: 
+      NHD.DBO.NHDFlowlines (From-To): Constant = Use Restriction
+      NHD.DBO.NHDFlowlines (To-From): Constant = Ignore Restriction
+    Default Attribute Evaluators: 
+      Default Edges: Constant = Ignore Restriction
+      Default Junctions: Constant = Ignore Restriction
+
+Directions: 
+  Directions Ready: No
+    -Length Attribute Required
+

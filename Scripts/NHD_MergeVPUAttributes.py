@@ -18,7 +18,7 @@
 import sys, os, arcpy
 
 #Root folder - Set this to where the NHD+ data live
-rootFldr = r'K:\Research\NHDv2'
+rootFldr = r'C:\WorkSpace\NHDplusV2_Data\Data'
 outFldr = os.path.abspath("..\\Data\\VPUMerge.gdb")
 
 #Allow overwrites

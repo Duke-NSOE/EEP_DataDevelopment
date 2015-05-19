@@ -16,7 +16,8 @@ arcpy.env.overwriteOutput = True
 arcpy.env.workspace = vpuGDB
 
 #Create a list of the parameter tables/field name tuples to process
-parameters = [('IncrPrecip','Precip'),('IncrTempMA','Temp'),('ROMA','RunOff')]
+parameters = [('IncrPrecip','Precip'),('IncrTemp','Temp'),('ROMA','RunOff')]
+parameters = [('IncrTemp','Temp'),('ROMA','RunOff')]
 
 #Loop through the tables
 for tbl,fld in parameters:
