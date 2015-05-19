@@ -38,27 +38,41 @@ arcpy.env.workspace = dataFldrs[0]
 parameters = arcpy.ListFiles("*.txt")
 
 #Drop some items...
-parameters.remove("IncrLat.txt")
-parameters.remove("CumDivNLCD2011.txt")
-parameters.remove("CumDivPrecipMA.txt")
-parameters.remove("CumDivTempMA.txt")
-parameters.remove("CumTotNLCD2011.txt")
+parameters.remove("IncrLat.txt")            #Skip the Incremental Latitude value; not used
+parameters.remove("CumDivNLCD2011.txt")     #Skip the divergence-routed accumulations 
+parameters.remove("CumDivPrecipMA.txt")     #...
+parameters.remove("CumDivTempMA.txt")       #...
 
 #Status counter
 x = 1
 
+#Loop through all the parameter files found in the VPU attribute folder (Region 03)
 for param in parameters:
     print "Working on {} ({} of {})".format(param,x,len(parameters))
     x += 1 #Increase the counter
+    skip = 0 #Tripwire if a file is not found
 
-    #Create the output file in the geodatabase
+    # Generate the output file name for the parameter
     outFile = os.path.join(outFldr,param[:-4])
+    
+    # Skip processing if the output file exists
+    if arcpy.Exists(outFile):
+        print "Output {} exists. Skipping".format(outFile)
+        skip = 1
+        continue #Go the the next parameter
 
     #loop thru each workspace and create an merge list
     fileNames = []
     for df in dataFldrs:
-        fileNames.append(os.path.join(df,param))
-        
-    #Merge the files
-    print "...merging files" 
-    arcpy.Merge_management(fileNames,outFile)
+        fileName = os.path.join(df,param)
+        if os.path.exists(fileName):
+            fileNames.append(fileName)
+        else:
+            print "{} doesn't exist".format(fileName)
+            skip = 1
+
+    if skip == 0:
+        #Merge the files
+        print "...merging files" 
+        arcpy.Merge_management(fileNames,outFile)
+    else: print "Skipped"
