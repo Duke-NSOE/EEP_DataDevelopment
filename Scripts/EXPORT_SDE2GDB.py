@@ -1,6 +1,10 @@
 #EXPORT_SDE2GDB.py
 #
-# Source: http://gis.stackexchange.com/questions/67529/how-to-copy-an-sde-geodatabase-to-a-file-geodatabase-using-python
+# Description:
+#  Converts contents of an ArcGIS Server (SDE) into a file geodatabase
+#
+# Source:
+#  http://gis.stackexchange.com/questions/67529/how-to-copy-an-sde-geodatabase-to-a-file-geodatabase-using-python
 #
 # July 2015
 # John.Fay@duke.edu
@@ -9,8 +13,18 @@ import arcpy, os, shutil, time
 import logging as log
 from datetime import datetime
 
-databaseConnection = os.path.abspath("C:\WorkSpace\EEP_Spring2015\EEP_Tool\Data\NC.sde")
-targetGDB = 'C:/temp/XMLS/NC_copy.gdb'
+#Script variables
+databaseConnection = arcpy.GetParameterAsText(0) #SDE File to convert
+targetGDB = arcpy.GetParameterAsText(1)          #File geodatabase
+
+def msg(txt,type="message"):
+    print txt
+    if type == "message":
+        arcpy.AddMessage(txt)
+    elif type == "warning":
+        arcpy.AddWarning(txt)
+    elif type == "error":
+        arcpy.AddError(txt)
 
 def formatTime(x):
     minutes, seconds_rem = divmod(x, 60)
@@ -41,9 +55,11 @@ def replicateDatabase(dbConnection, targetGDB):
     filename=logName,level=log.INFO)
 
     print "Old Target Geodatabase: %s -- Feature Count: %s" %(targetGDB, cntGDB)
+    msg("Old Target Geodatabase: %s -- Feature Count: %s" %(targetGDB, cntGDB))
     log.info("Old Target Geodatabase: %s -- Feature Count: %s" %(targetGDB, cntGDB))
     print "Geodatabase being copied: %s -- Feature Count: %s" %(dbConnection, cntSDE)
     log.info("Geodatabase being copied: %s -- Feature Count: %s" %(dbConnection, cntSDE))
+    msg("Geodatabase being copied: %s -- Feature Count: %s" %(dbConnection, cntSDE))
 
     arcpy.env.workspace = dbConnection
 
@@ -52,13 +68,14 @@ def replicateDatabase(dbConnection, targetGDB):
         shutil.rmtree(targetGDB)
         print "Deleted Old %s" %(os.path.split(targetGDB)[-1])
         log.info("Deleted Old %s" %(os.path.split(targetGDB)[-1]))
+        msg("Deleted Old %s" %(os.path.split(targetGDB)[-1]))
     except Exception as e:
-        print e
         log.info(e)
+        msg(e,"error")
 
     #creates a new targetGDB
     GDB_Path, GDB_Name = os.path.split(targetGDB)
-    print "Now Creating New %s" %(GDB_Name)
+    msg("Now Creating New %s" %(GDB_Name))
     log.info("Now Creating New %s" %(GDB_Name))
     arcpy.CreateFileGDB_management(GDB_Path, GDB_Name)
 
@@ -76,23 +93,28 @@ def replicateDatabase(dbConnection, targetGDB):
             try:
                 print "Atempting to Copy %s to %s" %(targetName, targetPath)
                 log.info("Atempting to Copy %s to %s" %(targetName, targetPath))
+                msg("Atempting to Copy %s to %s" %(targetName, targetPath))
                 arcpy.Copy_management(sourcePath, targetPath)
                 print "Finished copying %s to %s" %(targetName, targetPath)
                 log.info("Finished copying %s to %s" %(targetName, targetPath))
+                msg("Finished copying %s to %s" %(targetName, targetPath))
             except Exception as e:
-                print "Unable to copy %s to %s" %(targetName, targetPath)
+                msg( "Unable to copy %s to %s" %(targetName, targetPath))
                 print e
                 log.info("Unable to copy %s to %s" %(targetName, targetPath))
                 log.info(e)
+                msg("Unable to copy %s to %s" %(targetName, targetPath))
+                msg(e)
         else:
-            print "%s already exists....skipping....." %(targetName)
+            msg("%s already exists....skipping....." %(targetName))
             log.info("%s already exists....skipping....." %(targetName))
     featGDB,cntGDB = getDatabaseItemCount(targetGDB)
-    print "Completed replication of %s -- Feature Count: %s" %(dbConnection, cntGDB)
+    msg("Completed replication of %s -- Feature Count: %s" %(dbConnection, cntGDB))
     log.info("Completed replication of %s -- Feature Count: %s" %(dbConnection, cntGDB))
     totalTime = (time.time() - startTime)
     totalTime = formatTime(totalTime)
     log.info("Script Run Time: %s" %(totalTime))
+    msg("Script Run Time: %s" %(totalTime))
 
 if __name__== "__main__":
     #databaseConnection = r"YOUR_SDE_CONNECTION"
