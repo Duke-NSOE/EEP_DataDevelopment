@@ -32,7 +32,7 @@ for tbl in [incrNLCD]:
 #Create the field calculation expressions (remove the "C" when doing incremental...)
 exp1c='!NLCD11AC!'
 exp2c='!NLCD21AC! + !NLCD22AC! + !NLCD23AC! + !NLCD24AC!'
-exp3c='!NLCD21AC!'
+exp3c='!NLCD31AC!'
 exp4c='!NLCD41AC! + !NLCD22AC! + !NLCD43AC!'
 exp5c='!NLCD51AC!'
 exp7c='!NLCD71AC!'
@@ -55,7 +55,7 @@ arcpy.CalculateField_management(cumNLCD,"NLCD9",exp9c,"PYTHON"); print "{} of 8"
 #Create the field calculation expressions (remove the "C" when doing incremental...)
 exp1i='!NLCD11A!'
 exp2i='!NLCD21A! + !NLCD22A! + !NLCD23A! + !NLCD24A!'
-exp3i='!NLCD21A!'
+exp3i='!NLCD31A!'
 exp4i='!NLCD41A! + !NLCD22A! + !NLCD43A!'
 exp5i='!NLCD51A!'
 exp7i='!NLCD71A!'
